@@ -7,6 +7,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -28,6 +29,7 @@ public class EnvironmentsServiceImpl implements EnvironmentsService {
 
     @Override
     public Flux<String> getEnvServicesDetail(String env) {
-        return Flux.fromIterable(List.of("mcsv-1:0.1.0", "mcsv-1:0.2.0-SNAPSHOT", "mcsv-2:0.5.1", "mcsv-3:1.0.2"));
+        return Flux.fromIterable(List.of("mcsv-1:0.1.0", "mcsv-1:0.2.0-SNAPSHOT", "mcsv-2:0.5.1", "mcsv-3:1.0.2"))
+                .take(4 - (new Random().nextInt(3)));
     }
 }
