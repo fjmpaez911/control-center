@@ -5,15 +5,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class EnvironmentsController {
@@ -29,6 +29,11 @@ public class EnvironmentsController {
     @GetMapping(value = "/envs/{env}/details", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getEnv(@PathVariable String env) {
         return service.getEnvServicesDetail(env);
+    }
+
+    @GetMapping(value = "/envs/block")
+    public List<EnvInfo> getEnvsBlock() {
+        return service.getEnvs().collectList().toProcessor().block();
     }
 
 }

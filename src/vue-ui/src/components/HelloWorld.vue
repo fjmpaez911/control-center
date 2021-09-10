@@ -32,28 +32,28 @@
   </v-container>
 </template>
 
+
 <script>
+  import controlCenterService from '@/services/ControlCenterService.js'
+
   export default {
     name: 'HelloWorld',
 
+    created() {
+      this.load()
+    },
+
     data: () => ({
-      environments: [
-        {
-          branch: 'env1',
-          owner: 'Colin Ford',
-          services: ['mcsv1', 'mcsv2']
-        },
-        {
-          branch: 'env2',
-          owner: 'James Rusel',
-          services: ['mcsv1', 'mcsv2', 'mcsv3']
-        },
-        {
-          branch: 'env3',
-          owner: 'Tim Anderson',
-          services: ['mcsv1', 'mcsv5']
-        },
-      ],
+      environments: [],
     }),
+
+    methods: {
+
+      load() {
+        controlCenterService.environments.getAll().then(it => this.environments = it.data)
+      },
+
+    }
+
   }
 </script>
