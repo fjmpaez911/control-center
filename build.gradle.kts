@@ -71,10 +71,12 @@ tasks {
 
 	bootJar {
 		archiveFileName.set("app.jar")
-		layered()
 	}
 
 	processResources {
+
+		dependsOn(mutableListOf("copyVueStatic"))
+
 		filesMatching("bootstrap.*") {
 			expand(project.properties)
 		}
@@ -99,6 +101,25 @@ tasks {
 			dockerPush()
 		}
 	}
+
+	register("npmBuild") {
+
+		group = "vue"
+
+		doLast {
+			npmBuild()
+		}
+	}
+
+	register<Copy>("copyVueStatic") {
+
+		group = "vue"
+		dependsOn(mutableListOf("npmBuild"))
+
+		from(layout.projectDirectory.dir("src/vue-ui/dist/"))
+		into(layout.buildDirectory.dir("resources/main/static"))
+	}
+
 }
 
 fun dockerBuild() {
@@ -114,6 +135,15 @@ fun dockerPush() {
 	exec {
 		executable("docker")
 		args("push", "${property("dockerImage")}:${project.version}")
+	}
+}
+
+fun npmBuild() {
+
+	exec {
+		workingDir(layout.projectDirectory.dir("src/vue-ui/"))
+		executable("npm")
+		args("run", "build")
 	}
 }
 
